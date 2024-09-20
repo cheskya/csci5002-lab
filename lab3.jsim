@@ -1,0 +1,44 @@
+* Candari, Roger II
+* Lluisma, Arthur Jed
+* Reyes, Francesca Dominique
+
+.include "8clocks.jsim"
+.include "nominal.jsim"
+.include "stdcell.jsim"
+
+* the original full adder
+
+.subckt fa a b carry_in sum carry_out
+* the sum
+Xfirst a b subout1 xor2
+Xsecond subout1 carry_in sum xor2
+*the carry
+Xthird subout1 carry_in subout2 nand2
+Xfourth a b subout3 nand2
+Xfifth subout2 subout3 carry_out nand2
+.ends
+
+* create the 32-bit ripple carry adder
+
+.subckt add32 a[31:0] b[31:0] c_in0 sum[31:0] c_out[31:30]
+Xbit[31:0] a[31:0] b[31:0] c_out[30:0] c_in0 sum[31:0] c_out[31:0] fa
+.ends
+
+* instantiate the subckt and give it its values
+
+Xsum a[31:0] b[31:0] 0 sumab[31:0] cab31 cab30 add32
+
+* create the digital waveform
+
+Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns)
++ 0x00000000 0x55555555 0x00000000 0x55555555 0xFFFFFFFF 0xAAAAAAAA 0x00000000 0xAAAAAAAA 0x00000001 0xFFFFFFFF
+Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns)
++ 0x00000000 0x00000000 0x55555555 0x55555555 0xFFFFFFFF 0x00000000 0xAAAAAAAA 0xAAAAAAAA 0xFFFFFFFF 0x00000001
+
+* plot the values (digital waveforms)
+
+.tran 200ns
+.plot a[31:0]
+.plot b[31:0]
+.plot sumab[31:0]
+.plot cab[31:30]  

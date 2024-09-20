@@ -1,0 +1,17 @@
+* the full adder
+
+.subckt fa a b carry_in sum carry_out
+* the sum
+Xfirst a b subout1 xor2
+Xsecond subout1 carry_in sum xor2
+* the carry
+Xthird subout1 carry_in subout2 nand2
+Xfourth a b subout3 nand2
+Xfifth subout2 subout3 carry_out nand2
+.ends
+
+* the 32-bit full adder
+
+.subckt add32 a[31:0] b[31:0] c_in0 sum[31:0] c_out[31:30]
+Xbit[31:0] a[31:0] b[31:0] c_out[30:0] c_in0 sum[31:0] c_out[31:0] fa
+.ends
