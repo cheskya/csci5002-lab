@@ -24,6 +24,6 @@ Xbit[31:0] a[31:0] b[31:0] c_out[30:0] c_in0 sum[31:0] c_out[31:0] fa
 
 .subckt counter32 reset a[31:0] f[31:0] clk
 Xadd a[31:0] f[31:0] 0 sum[31:0] c_out1 c_out2 add32
-Xmux[31:0] reset#32 0#32 sum[31:0] z[31:0] mux2
+Xmux[31:0] reset#32 sum[31:0] 0#32 z[31:0] mux2
 Xdreg[31:0] z[31:0] clk#32 f[31:0] dreg
 .ends
