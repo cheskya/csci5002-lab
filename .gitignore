@@ -1,0 +1,7 @@
+# the executable
+jsim.jar
+
+# the other important jsim modules
+nominal.jsim
+stdcell.jsim
+8clocks.jsim
