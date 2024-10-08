@@ -35,9 +35,8 @@ Xdreg[31:0] z[31:0] clk#32 f[31:0] dreg
 * the 32-bit adder/subtractor
 
 .subckt as32 a[31:0] b[31:0] op0 fas[31:0] n v z
-Xinv b[31:0] invb[31:0] inverter
-Xmux op0#32 b[31:0] invb[31:0] muxb[31:0] mux2
-Xadd a[31:0] muxb[31:0] op0 fas[31:0] out[31:30] add32
+Xor b[31:0] op0#32 finalb[31:0] xor2
+Xadd a[31:0] finalb[31:0] op0 fas[31:0] out[31:30] add32
 * get n
 .connect fas31 n
 * get v
