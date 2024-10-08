@@ -62,3 +62,9 @@ Xcheckless op2 tempout op2andn and2
 Xfinalcheck op1andz op2andn fcmp[0] or2
 .connect 0 fcmp[31:1]
 .ends
+
+* bool32 circuit
+
+.subckt bool32 a[31:0] b[31:0] op[3:0] fbool[31:0]
+Xmux a[31:0] b[31:0] op3 op2 op1 op0 fbool[31:0] mux4
+.ends
