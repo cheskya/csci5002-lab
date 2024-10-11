@@ -1,0 +1,25 @@
+* Candari, Roger II
+* Lluisma, Arthur Jed
+* Reyes, Francesca Dominique
+
+.include "myHeader.jsim"
+
+Xalu a[31:0] b[31:0] alufn[5:0] f[31:0] alu32
+
+Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns)
++ 0x000001 0x000001 0x000000
+
+Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns)
++ 0x000001 0x000001 0x000000
+
+Wc alufn[5:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns)
++ 0x000000 0x000001 0x011000 0x101000 0x111000 0x100000 0x100100 0x101100 0x11
+
+* -, +, =, <, <=, llshift, lrshift, arshift, AND, OR, NOT A, NOT B, XOR, NAND, NOR
+
+.tran 640ns
+.plot a[31:0]
+.plot b[31:0]
+.plot alufn[5:0]
+.plot f[31:0]
+
