@@ -61,3 +61,14 @@ Xcheckless op2 tempout op2andn and2
 Xfinalcheck op1andz op2andn fcmp[0] or2
 .connect 0 fcmp[31:1]
 .ends
+
+* the 32-bit alu
+
+.subckt alu32 a[31:0] b[31:0] alufn[5:0] f[31:0]
+Xas a[31:0] b[31:0] alufn3 f1_[31:0] n v z as32
+Xbool a[31:0] b[31:0] alufn[3:0] f2_[31:0] bool32
+Xshift a[31:0] b[31:28] alufn[3:2] f3_[31:0] shift32
+Xascmp a[31:0] b[31:0] alufn1 fx_[31:0] nx vx zx as32
+Xcmp nx vx zx alufn[3:2] f4_[31:0] cmp32
+Xmux alufn5 alufn4 f1_[31:0] f2_[31:0] f3_[31:0] f4_[31:0] f[31:0] mux4
+.ends
