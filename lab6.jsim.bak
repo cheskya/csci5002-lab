@@ -35,8 +35,9 @@ Xdreg[31:0] z[31:0] clk#32 f[31:0] dreg
 * the 32-bit adder/subtractor
 
 .subckt as32 a[31:0] b[31:0] op0 fas[31:0] n v z
-Xor b[31:0] op0#32 finalb[31:0] xor2
-Xadd a[31:0] finalb[31:0] op0 fas[31:0] out[31:30] add32
+Xinv b[31:0] invb[31:0] inverter
+Xmux op0#32 b[31:0] invb[31:0] muxb[31:0] mux2
+Xadd a[31:0] muxb[31:0] op0 fas[31:0] out[31:30] add32
 * get n
 .connect fas31 n
 * get v
@@ -68,7 +69,8 @@ Xfinalcheck out1_inv out2_inv fcmp0 nand2
 .connect 0 fcmp[31:1]
 .ends
 
-* the 32-bit bool
+* bool32 circuit
+
 .subckt bool32 a[31:0] b[31:0] op[3:0] fbool[31:0]
 Xmux a[31:0] b[31:0] op0#32 op1#32 op2#32 op3#32 fbool[31:0] mux4
 .ends
@@ -76,21 +78,30 @@ Xmux a[31:0] b[31:0] op0#32 op1#32 op2#32 op3#32 fbool[31:0] mux4
 * the 32-bit shifter
 
 .subckt shift32 a[31:0] b[4:0] op[1:0] fshift[31:0]
-Xsetinput op1 0 a[31] fshift[31:0] mux2
-X16shift b4 a[31:0] a[31:16] 16temp[31:0] mux2
-X8shift b3 16temp[31:0] 16temp[31:8] 8temp[31:0] mux2
-X4shift b2 8temp[31:0] 8temp[31:4] 4temp[31:0] mux2
-X2shift b1 4temp[31:0] 4temp[31:2] 2temp[31:0] mux2
-X1shift b0 2temp[31:0] 2temp[31:1] 1temp[31:0] mux2
-Xshifter op0 0 1temp[31:0] fshift[31:0] mux2
+*Xsetinput op1#32 0#32 a31#32 fshift[31:0] mux2
+X16shift b4#32 a[31:0] a[31:16] 0#16 16temp[31:0] mux2
+X8shift b3#32 16temp[31:0] 0#8 16temp[31:8]  8temp[31:0] mux2
+X4shift b2#32 8temp[31:0] 0#4 8temp[31:4]  4temp[31:0] mux2
+X2shift b1#32 4temp[31:0] 0#2 4temp[31:2]  2temp[31:0] mux2
+X1shift b0#32 2temp[31:0] 0#1 2temp[31:1]  fshift[31:0] mux2
+*Xshifter op0#32 0#32 1temp[31:0] fshift[31:0] mux2
 .ends 
 
-* the 32-bit alu
 
-.subckt alu32 a[31:0] b[31:0] alufn[5:0] f[31:0]
-Xas a[31:0] b[31:0] alufn3 f1_[31:0] n v z as32
-Xbool a[31:0] b[31:0] alufn[3:0] f2_[31:0] bool32
-Xshift a[31:0] b[31:28] alufn[3:2] f3_[31:0] shift32
-Xascmp a[31:0] b[31:0] alufn1 fx_[31:0] nx vx zx as32
-Xcmp nx vx zx alufn[3:2] f4_[31:0] cmp32
-Xmux alufn5 alufn4 f1_[31:0] f2_[31:0] f3_[31:0] f4_[31:0] f[31:0] mux4
+
+
+* chaining diagram
+
+Xbool a[31:0] b[31:0] op[3:0] fbool[31:0] bool32
+Xshift a[31:0] b[4:0] op[1:0] fshift[31:0] shift32
+
+Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x55555555
+Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000008
+Wc op[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000008
+
+.tran 640ns
+.plot a[31:0]
+.plot b[4:0]
+.plot op[3:0]
+.plot fshift[31:0]
+.plot fbool[31:0]

@@ -22,4 +22,3 @@ Wc alufn[5:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns)
 .plot b[31:0]
 .plot alufn[5:0]
 .plot f[31:0]
-
