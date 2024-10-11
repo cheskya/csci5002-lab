@@ -2,17 +2,9 @@
 * Lluisma, Arthur Jed
 * Reyes, Francesca Dominique
 
-* the critical path for this circuit...
-* - contains the start node b31
-* - contains the end node fcmp0
-* - contains the gates: inverter, mux2, add32, nor2,
-* nand2, nor2, nand2, nor2, and2, xor2, and2, or2
-
 .include "8clocks.jsim"
 .include "nominal.jsim"
 .include "stdcell.jsim"
-
-* subcircuits
 
 * the full adder
 
@@ -36,7 +28,7 @@ Xbit[31:0] a[31:0] b[31:0] c_out[30:0] c_in0 sum[31:0] c_out[31:0] fa
 
 .subckt counter32 reset a[31:0] f[31:0] clk
 Xadd a[31:0] f[31:0] 0 sum[31:0] c_out1 c_out2 add32
-Xmux[31:0] reset#32 sum[31:0] 0#32  z[31:0] mux2
+Xmux[31:0] reset#32 sum[31:0] 0#32 z[31:0] mux2
 Xdreg[31:0] z[31:0] clk#32 f[31:0] dreg
 .ends
 
@@ -77,21 +69,39 @@ Xfinalcheck out1_inv out2_inv fcmp0 nand2
 .connect 0 fcmp[31:1]
 .ends
 
+* bool32 circuit
+
+.subckt bool32 a[31:0] b[31:0] op[3:0] fbool[31:0]
+Xmux a[31:0] b[31:0] op0#32 op1#32 op2#32 op3#32 fbool[31:0] mux4
+.ends
+
+* the 32-bit shifter
+
+.subckt shift32 a[31:0] b[4:0] op[1:0] fshift[31:0]
+Xsetinput op1#32 0#32 a31#32 fshift[31:0] mux2
+X16shift b4#32 a[31:0] a[31:16] 16temp[31:0] mux2
+X8shift b3#32 16temp[31:0] 16temp[31:8] 8temp[31:0] mux2
+X4shift b2#32 8temp[31:0] 8temp[31:4] 4temp[31:0] mux2
+X2shift b1#32 4temp[31:0] 4temp[31:2] 2temp[31:0] mux2
+X1shift b0#32 2temp[31:0] 2temp[31:1] 1temp[31:0] mux2
+Xshifter op0#32 0#32 1temp[31:0] fshift[31:0] mux2
+.ends 
+
+
+
+
 * chaining diagram
 
-Xas a[31:0] b[31:0] op0 fas[31:0] n v z as32
-Xcmp n v z op[2:1] fcmp[31:0] cmp32
+Xbool a[31:0] b[31:0] op[3:0] fbool[31:0] bool32
+Xshift a[31:0] b[4:0] op[1:0] fshift[31:0] shift32
 
-Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0   0x55555555   0          0x55555555 -1   0    0    0xAAAAAAAA 0          0xAAAAAAAA  1  -1   0x80000000 -1   2   2   2    0x80000000 0x80000000 0x80000000 3    3    3    0x7FFFFFFF  0x7FFFFFFF  0x7FFFFFFF   3   3   3
-Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0   0            0x55555555 0x55555555 -1   0    -1   0          0xAAAAAAAA 0xAAAAAAAA -1   1   0x80000000 -1   -3  -3  -3   2          2          2          5    5    5    -2          -2          -2           3   3   3
-Wc op[2:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 000 000          000        000         000 001  001  000        000        000         000 000 000         001 011 101 111  011        101        111        011  101  111  011         101         111          011 101 111
+Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000007
+Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000005
+Wc op[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000008
 
 .tran 640ns
 .plot a[31:0]
-.plot b[31:0]
-.plot fas[31:0]
-.plot n
-.plot v
-.plot z
-.plot fcmp[31:0]
-.plot op[2:0]
+.plot b[4:0]
+.plot op[3:0]
+.plot fshift[31:0]
+.plot fbool[31:0]
