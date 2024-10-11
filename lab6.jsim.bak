@@ -72,8 +72,20 @@ Xfinalcheck out1_inv out2_inv fcmp0 nand2
 * bool32 circuit
 
 .subckt bool32 a[31:0] b[31:0] op[3:0] fbool[31:0]
-Xmux a[31:0] b[31:0] op3 op2 op1 op0 fbool[31:0] mux4
+Xmux a[31:0] b[31:0] op0#32 op1#32 op2#32 op3#32 fbool[31:0] mux4
 .ends
+
+* the 32-bit shifter
+
+.subckt shift32 a[31:0] b[4:0] op[1:0] fshift[31:0]
+*Xsetinput op1#32 0#32 a31#32 fshift[31:0] mux2
+X16shift b4#32 a[31:0] a[31:16] 0#16 16temp[31:0] mux2
+X8shift b3#32 16temp[31:0] 0#8 16temp[31:8]  8temp[31:0] mux2
+X4shift b2#32 8temp[31:0] 0#4 8temp[31:4]  4temp[31:0] mux2
+X2shift b1#32 4temp[31:0] 0#2 4temp[31:2]  2temp[31:0] mux2
+X1shift b0#32 2temp[31:0] 0#1 2temp[31:1]  fshift[31:0] mux2
+*Xshifter op0#32 0#32 1temp[31:0] fshift[31:0] mux2
+.ends 
 
 
 
@@ -81,13 +93,15 @@ Xmux a[31:0] b[31:0] op3 op2 op1 op0 fbool[31:0] mux4
 * chaining diagram
 
 Xbool a[31:0] b[31:0] op[3:0] fbool[31:0] bool32
+Xshift a[31:0] b[4:0] op[1:0] fshift[31:0] shift32
 
 Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x55555555
-Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000002
-Wc op[1:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 01
+Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000008
+Wc op[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000008
 
 .tran 640ns
 .plot a[31:0]
 .plot b[4:0]
-.plot op[1:0]
+.plot op[3:0]
 .plot fshift[31:0]
+.plot fbool[31:0]

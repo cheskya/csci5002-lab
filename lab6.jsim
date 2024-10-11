@@ -78,26 +78,24 @@ Xmux a[31:0] b[31:0] op0#32 op1#32 op2#32 op3#32 fbool[31:0] mux4
 * the 32-bit shifter
 
 .subckt shift32 a[31:0] b[4:0] op[1:0] fshift[31:0]
-Xsetinput op1#32 0#32 a31#32 fshift[31:0] mux2
-X16shift b4#32 a[31:0] a[31:16] 16temp[31:0] mux2
-X8shift b3#32 16temp[31:0] 16temp[31:8] 8temp[31:0] mux2
-X4shift b2#32 8temp[31:0] 8temp[31:4] 4temp[31:0] mux2
-X2shift b1#32 4temp[31:0] 4temp[31:2] 2temp[31:0] mux2
-X1shift b0#32 2temp[31:0] 2temp[31:1] 1temp[31:0] mux2
-Xshifter op0#32 0#32 1temp[31:0] fshift[31:0] mux2
+Xfill a31 op1 fll and2
+Xflipin op0#32 a[0:31] a[31:0] in[31:0] mux2
+X16shift b4#32 in[31:0] in[31:16] fll#16 16temp[31:0] mux2
+X8shift b3#32 16temp[31:0] fll#8 16temp[31:8]  8temp[31:0] mux2
+X4shift b2#32 8temp[31:0] fll#4 8temp[31:4]  4temp[31:0] mux2
+X2shift b1#32 4temp[31:0] fll#2 4temp[31:2]  2temp[31:0] mux2
+X1shift b0#32 2temp[31:0] fll#1 2temp[31:1]  1temp[31:0] mux2
+Xflipfn op0#32 1temp[0:31] 1temp[31:0] fshift[31:0] mux2
 .ends 
-
-
-
 
 * chaining diagram
 
 Xbool a[31:0] b[31:0] op[3:0] fbool[31:0] bool32
 Xshift a[31:0] b[4:0] op[1:0] fshift[31:0] shift32
 
-Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000007
-Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000005
-Wc op[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000008
+Wa a[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x55555555
+Wb b[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000007
+Wc op[31:0] nrz(0, 5, 20ns, 0ns, 0.001ns, 0.001ns) + 0x00000000
 
 .tran 640ns
 .plot a[31:0]
