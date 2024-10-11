@@ -53,12 +53,18 @@ Xnor2 nand2out1 nand2out0 z nor2
 
 .subckt cmp32 n v z op[2:1] fcmp[31:0]
 *if op1 = 1, check for a = b, z = 1
-Xcheckeq op1 z op1andz and2
+Xinvop1 op1 op1_inv inverter
+Xinvz z z_inv inverter
+Xcheckeq op1_inv z_inv op1norz nor2 
 *if op2 = 1, check for a < b, n = 1
 Xchecknv n v tempout xor2
-Xcheckless op2 tempout op2andn and2
+Xinvop2 op2 op2_inv inverter
+Xinvtempout tempout tempout_inv inverter
+Xcheckless op2_inv tempout_inv op2norn nor2
 *if op1 op2 = 1, check for a < b or a = b
-Xfinalcheck op1andz op2andn fcmp[0] or2
+Xinvop1norz op1norz out1_inv inverter
+Xinvop2norn op2norn out2_inv inverter
+Xfinalcheck out1_inv out2_inv fcmp0 nand2
 .connect 0 fcmp[31:1]
 .ends
 
