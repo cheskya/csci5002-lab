@@ -9,3 +9,6 @@ stdcell.jsim
 # idk what this is but ok
 application.properties
 jsimtemp
+
+# backup files
+*.bak
