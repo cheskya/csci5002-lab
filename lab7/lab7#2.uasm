@@ -1,0 +1,3 @@
+.include "beta.uasm"
+
+// reverse the elements of an array
