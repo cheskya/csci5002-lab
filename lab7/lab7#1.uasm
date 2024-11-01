@@ -1,3 +1,45 @@
-.include "beta.uasm"
+  .include "beta.uasm"
 
-// sum of all even numbers in an array
+  // sum of all even numbers in an array
+
+  MOVE(r31, r0)
+  MOVE(r31, r1)
+  LD(N, r2)
+
+  // memory address
+  MULC(r2, 4, r20)
+
+while:
+  CMPLT(r1, r2, r3)
+  BF(r3, endWhile)
+  MULC(r1, 4, r4)
+  LD(r4, arr, r5)
+  MOVE(r5, r6)
+  BR(evenCheck) 
+
+evenCheck:
+  CMPEQ(r6, r31, r7)
+  BT(r7, isEven)
+  ADDC(r6, 1, r8)
+  SUBC(r6, 1, r9)
+  XORC(r6, 1, r7)  
+  CMPEQ(r7, r8, r10)
+  BT(r10, isEven)
+  CMPEQ(r7, r9, r10)
+  BT(r10, incrementCounter)
+
+isEven:
+  ADD(r0, r5, r0)
+  BR(incrementCounter)
+
+incrementCounter:
+  ADDC(r1, 1, r1)
+  BR(while)
+
+endWhile:
+  ST(r0, arr, r20)
+  HALT()
+  
+N: LONG(5)
+arr: LONG(2) LONG(5) LONG(4) LONG(6) LONG(7)
+. = 0x1000
