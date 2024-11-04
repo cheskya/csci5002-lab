@@ -1,6 +1,10 @@
-.include beta.uasm
+| Candari, Roger II
+| Lluisma, Arthur Jed
+| Reyes, Francesca Dominique
 
 | fibonacci sequence
+
+.include beta.uasm
 
 initialize:
   LD(DATA, r1)

@@ -1,6 +1,10 @@
-.include beta.uasm
+| Candari, Roger II
+| Lluisma, Arthur Jed
+| Reyes, Francesca Dominique
 
 | sum of all even numbers in an array
+
+.include beta.uasm
 
 MULC(r1, 4, r4)
 LD(r4, DATA, r5)

@@ -1,6 +1,10 @@
-.include beta.uasm
+| Candari, Roger II
+| Lluisma, Arthur Jed
+| Reyes, Francesca Dominique
 
 | reverse the elements of an array
+
+.include beta.uasm
 
 ADDC(R1,1,R1)
 LD(DATA,R2)

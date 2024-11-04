@@ -1,6 +1,10 @@
-.include beta.uasm
+| Candari, Roger II
+| Lluisma, Arthur Jed
+| Reyes, Francesca Dominique
 
 | XOR cipher with a repeating key
+
+.include beta.uasm
 
 initialize:
   MOVE(r31, r0)
