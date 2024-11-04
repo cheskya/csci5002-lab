@@ -4,16 +4,18 @@
 
 initialize:
 MOVE(r31, r0)
-LD(key, r1)
-LD(length, r2)
+LD(DATA, r1)
+ADDC(r31, 4, r2)
+LD(r2, DATA, r2)
 
 startLoop:
 CMPLT(r0, r2, r3)
 BF(r3, endLoop)
 MULC(r0, 4, r4)
-LD(r4, text, r5)
+ADDC(r4, 8, r4)
+LD(r4, DATA, r5)
 XOR(r1, r5, r6)
-ST(r6, text, r4)
+ST(r6, DATA, r4)
 
 nextLoop:
 ADDC(r0, 1, r0)
@@ -22,6 +24,11 @@ BR(startLoop)
 endLoop:
 HALT()
 
-key: LONG(42)
-length: LONG(5)
-text: LONG(3) LONG(-5) LONG(12) LONG(-14) LONG(1)
+DATA:
+LONG(42) // key
+LONG(5) // length
+LONG(3) // text
+LONG(-5)
+LONG(12)
+LONG(-14)
+LONG(1)
