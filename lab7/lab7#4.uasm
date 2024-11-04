@@ -2,31 +2,27 @@
 
 // fibonacci sequence
 
-N: LONG(10)
-BR(initialize)
-. = 0x1000
-
 initialize:
-LD(N, r1)
 MOVE(r31, r0)
+LD(DATA, r1)
 
 startLoop:
 CMPLT(r0, r1, r2)
 BF(r2, endLoop)
-ADDC(N, 1, r3)
-MULC(r3, 4, r3)
-firstTwoTerms:
+MULC(r0, 4, r3)
+ADDC(r3, 4, r3)
+firstTerms:
 CMPLTC(r0, 2, r2)
 BF(r2, nextTerms)
-ST(r0, N, r3)
+ST(r0, DATA, r3)
 BR(nextLoop)
 nextTerms:
 MULC(r0, 4, r4)
 SUBC(r4, 4, r5)
-LD(r4, N, r6)
-LD(r5, N, r7)
+LD(r4, DATA, r6)
+LD(r5, DATA, r7)
 ADD(r6, r7, r8)
-ST(r8, N, r3)
+ST(r8, DATA, r3)
 
 nextLoop:
 ADDC(r0, 1, r0)
@@ -34,3 +30,6 @@ BR(startLoop)
 
 endLoop:
 HALT()
+
+DATA: LONG(10)
+. = 0xFFFF
