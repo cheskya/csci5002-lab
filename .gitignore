@@ -6,6 +6,9 @@ nominal.jsim
 stdcell.jsim
 8clocks.jsim
 
+# the other important bsim modules
+beta.uasm
+
 # idk what this is but ok
 application.properties
 jsimtemp

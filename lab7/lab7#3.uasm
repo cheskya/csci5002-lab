@@ -1,34 +1,34 @@
-.include "beta.uasm"
+.include beta.uasm
 
-// XOR cipher with a repeating key
+| XOR cipher with a repeating key
 
 initialize:
-MOVE(r31, r0)
-LD(DATA, r1)
-ADDC(r31, 4, r2)
-LD(r2, DATA, r2)
+  MOVE(r31, r0)
+  LD(DATA, r1)
+  ADDC(r31, 4, r2)
+  LD(r2, DATA, r2)
 
 startLoop:
-CMPLT(r0, r2, r3)
-BF(r3, endLoop)
-MULC(r0, 4, r4)
-ADDC(r4, 8, r4)
-LD(r4, DATA, r5)
-XOR(r1, r5, r6)
-ST(r6, DATA, r4)
+  CMPLT(r0, r2, r3)
+  BF(r3, endLoop)
+  MULC(r0, 4, r4)
+  ADDC(r4, 8, r4)
+  LD(r4, DATA, r5)
+  XOR(r1, r5, r6)
+  ST(r6, DATA, r4)
 
 nextLoop:
-ADDC(r0, 1, r0)
-BR(startLoop)
+  ADDC(r0, 1, r0)
+  BR(startLoop)
 
 endLoop:
-HALT()
+  HALT()
 
 DATA:
-LONG(42) // key
-LONG(5) // length
-LONG(3) // text
-LONG(-5)
-LONG(12)
-LONG(-14)
-LONG(1)
+  LONG(42)
+  LONG(5)
+  LONG(3)
+  LONG(-5)
+  LONG(12)
+  LONG(-14)
+  LONG(1)

@@ -1,11 +1,11 @@
 .include beta.uasm
 
-// reverse the elements of an array
+| reverse the elements of an array
 
 ADDC(R1,1,R1)
-LD(R31,DATA,R2)
+LD(DATA,R2)
 LD(R31,0,R3) 
-LD(R31,DATA,R15)
+LD(DATA,R15)
 
 ANDC(R15,1,R4)
 DIVC(R15,2,R6)
@@ -13,41 +13,39 @@ BEQ(R4,EVENLOOP)
 BNE(R4,ODDLOOP)
 
 EVENLOOP:
-CMPLE(R1,R6,R7)
-BEQ(R7,DONE)
-SHLC(R1,2,R10)
-SHLC(R2,2,R11)
-LD(R10,DATA,R8)
-LD(R11,DATA,R9)
-ST(R8,DATA,R11)
-ST(R9,DATA,R10)
-ADDC(R1,1,R1)
-SUBC(R2,1,R2)
-BNE(R3,EVENLOOP)
+  CMPLE(R1,R6,R7)
+  BEQ(R7,DONE)
+  SHLC(R1,2,R10)
+  SHLC(R2,2,R11)
+  LD(R10,DATA,R8)
+  LD(R11,DATA,R9)
+  ST(R8,DATA,R11)
+  ST(R9,DATA,R10)
+  ADDC(R1,1,R1)
+  SUBC(R2,1,R2)
+  BNE(R3,EVENLOOP)
 	
 
 ODDLOOP:
-CMPEQ(R1,R2,R7)
-BNE(R7,DONE)
-SHLC(R1,2,R10)
-SHLC(R2,2,R11)
-LD(R10,DATA,R8)
-LD(R11,DATA,R9)
-ST(R8,DATA,R11)
-ST(R9,DATA,R10)
-ADDC(R1,1,R1)
-SUBC(R2,1,R2)
-BNE(R3,ODDLOOP)
+  CMPEQ(R1,R2,R7)
+  BNE(R7,DONE)
+  SHLC(R1,2,R10)
+  SHLC(R2,2,R11)
+  LD(R10,DATA,R8)
+  LD(R11,DATA,R9)
+  ST(R8,DATA,R11)
+  ST(R9,DATA,R10)
+  ADDC(R1,1,R1)
+  SUBC(R2,1,R2)
+  BNE(R3,ODDLOOP)
 
 DONE:
-HALT()
+  HALT()
 
-|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-| DATA marks the beginning of user "input" in memory.
-DATA:   LONG(5)             | <-- length of the array
-        LONG(1)             | <-- first element of the array
-        LONG(2)
-        LONG(3)
-        LONG(4)
-        LONG(5)            | <-- last element of the array
+DATA:
+  LONG(5)
+  LONG(3)
+  LONG(-5)
+  LONG(12)
+  LONG(-14)
+  LONG(1)

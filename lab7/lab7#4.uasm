@@ -1,35 +1,38 @@
-.include "beta.uasm"
+.include beta.uasm
 
-// fibonacci sequence
+| fibonacci sequence
 
 initialize:
-MOVE(r31, r0)
-LD(DATA, r1)
+  LD(DATA, r1)
 
 startLoop:
-CMPLT(r0, r1, r2)
-BF(r2, endLoop)
-MULC(r0, 4, r3)
-ADDC(r3, 4, r3)
+  CMPLT(r0, r1, r2)
+  BF(r2, endLoop)
+  MULC(r0, 4, r3)
+  ADDC(r3, 4, r3)
+
 firstTerms:
-CMPLTC(r0, 2, r2)
-BF(r2, nextTerms)
-ST(r0, DATA, r3)
-BR(nextLoop)
+  CMPLTC(r0, 2, r2)
+  BF(r2, nextTerms)
+  ST(r0, DATA, r3)
+  BR(nextLoop)
+
 nextTerms:
-MULC(r0, 4, r4)
-SUBC(r4, 4, r5)
-LD(r4, DATA, r6)
-LD(r5, DATA, r7)
-ADD(r6, r7, r8)
-ST(r8, DATA, r3)
+  MULC(r0, 4, r4)
+  SUBC(r4, 4, r5)
+  LD(r4, DATA, r6)
+  LD(r5, DATA, r7)
+  ADD(r6, r7, r8)
+  ST(r8, DATA, r3)
 
 nextLoop:
-ADDC(r0, 1, r0)
-BR(startLoop)
+  ADDC(r0, 1, r0)
+  BR(startLoop)
 
 endLoop:
-HALT()
+  HALT()
 
-DATA: LONG(10)
-. = 0xFFFF
+DATA:
+  LONG(10)
+
+. = 0xFFFFFF
