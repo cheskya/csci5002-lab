@@ -1,5 +1,6 @@
 # the executable
 jsim.jar
+bsim.jar
 
 # the other important jsim modules
 nominal.jsim
