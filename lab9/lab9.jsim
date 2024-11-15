@@ -1,0 +1,27 @@
+* Candari, Roger II
+* Lluisma, Arthur Jed
+* Reyes, Francesca Dominique
+
+* ALU
+* see lab 6
+
+* Instruction / Data Memory File
+* see lab 8
+
+* Register File
+* see lab 8
+
+* Control Logic
+* see lab 8
+
+* MUXs for PCSEL, RA2SEL, BSEL, WDSEL
+
+* NOR gate for Z
+
+* Program Counter (PC)
+
+* Jump Target (JT)
+
+* Branch Target (PC + 4 + 4C)
+
+* Reset Logic
