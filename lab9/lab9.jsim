@@ -163,6 +163,9 @@ Xjinste inst[15:0]  c[15:0]     join
 
 *******************************************************************************
 * NOR gate for Z
+Xzcheck1 rd1_31 rd1_30 y0 nor2
+Xzcheck2 rd1_[29:0] y[0:29] y[1:30] nor2
+.connect y30 z
 
 *******************************************************************************
 * Program Counter (PC)
@@ -185,7 +188,7 @@ Xjpc clk[8:2] pc[8:2] join
 
 * temporarily connect signals
 .connect vdd clk ra1_[4:0] ra2_[4:0] wa[4:0] wd[31:0] mema[8:0] memwd[31:0]
-.connect 0 z
+* .connect 0 z
 
 * plot some signals together
 Xjdisplaya ra2_b_wdsel[3:0] ra2sel bsel wdsel[1:0] join
