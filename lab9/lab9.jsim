@@ -93,8 +93,10 @@ Xmux alufn5#32 alufn4#32 f1_[31:0] f3_[31:0] f2_[31:0] f4_[31:0] f[31:0] mux4
 
 Xmemory  vdd  0    0   pc[8:2]    inst[31:0]
 +        vdd  0    0   mema[8:2]  memrd[31:0]
-+        0    clk  wr  mema[8:2]  memwd[31:0]
++        0    clk2  wr  mema[8:2]  memwd[31:0]
 + $memory width=32 nlocations=128 file="lab7.bin"
+Xcjoinrb c[15:11] rb[4:0] join
+Xmemwdjoinrd2_ memwd[31:0] rd2_[31:0] join
 
 *******************************************************************************
 * Register File
@@ -102,13 +104,15 @@ Xmemory  vdd  0    0   pc[8:2]    inst[31:0]
 
 Xregisters  vdd  0    0      ra1_[4:0]  rd1_[31:0]
 +           vdd  0    0      ra2_[4:0]  rd2_[31:0]
-+           0    clk  werf_  wa[4:0]    wd[31:0]
++           0    clk2  werf_  wa[4:0]    wd[31:0]
 + $memory width=32 nlocations=32 contents=(
 +   0 0 0 0 0 0 0 0
 +   0 0 0 0 0 0 0 0
 +   0 0 0 0 0 0 0 0
 +   0 0 0 0 0 0 0 0
 + )
+Xwajoinc wa[4:0] rc[4:0] join
+Xra1_joinra ra1_[4:0] ra[4:0] join
 
 Xcheck1 wa[4:1] z1 and4
 Xcheck2 wa0 z1 z2 and2
@@ -118,7 +122,7 @@ Xwerf z2 werf 0 werf_ mux2
 * Control Logic
 * see lab 8
 
-Xcontrol  vdd  0  0  z opcode[5:0] control[13:0]
+Xcontrol  vdd  0  0  z opcode[5:0]  control[13:0]
 + $memory width=14 nlocations=128 contents=(
 +   0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000
 +   0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000
@@ -160,16 +164,25 @@ Xjinste inst[15:0]  c[15:0]     join
 
 *******************************************************************************
 * MUXs for PCSEL, RA2SEL, BSEL, WDSEL
-
 Xpcsel_ pcsel0#7 pcsel1#7 pcincrement[8:2] branch[8:2] rd1_[8:2] pc[8:2] pc_res[8:2] mux4
+
+Xra2sel_ control11#5 inst[15:11] inst[25:21] ra2_[4:0] mux2 
+
+Xbsel_ bsel#32 rd2_[31:0] inst15#16 inst[15:0] b_res[31:0] mux2
+
+Xalu_ rd1_[31:0] b_res[31:0] control[7:2] mema[31:0] alu32
+
+Xwdsel0_ wdsel0#32 0#23 pcincrement[8:2] 0#2 mema[31:0] wd_branch_alu[31:0] mux2
+Xwdsel1_ wdsel1#32 wd_branch_alu[31:0] memrd[31:0] wd[31:0] mux2
 
 *******************************************************************************
 * NOR gate for Z
+Xzcheck1 rd1_31 rd1_30 y0 nor2
+Xzcheck2 rd1_[29:0] y[0:29] y[1:30] nor2
+.connect y30 z
 
 *******************************************************************************
 * Program Counter (PC)
-* replace the one here with the working program counter!
-
 Xpc pc_in[8:2] clk2#7 pc[8:2] dreg
 Xpcincrement pc[8:2] 0#7 pc_carry_out[7:2] vdd pcincrement[8:2] pc_carry_out[8:2] fa
 .connect 0 pc[1:0]
@@ -192,8 +205,8 @@ Xreset reset#9 control1 control0 pc_res[8:2] 0#9 wr werf pc_in[8:2] mux2
 * Other Stuff
 
 * temporarily connect signals
-.connect vdd clk ra1_[4:0] ra2_[4:0] wa[4:0] wd[31:0] mema[8:0] memwd[31:0]
-.connect 0 z
+* .connect vdd clk ra1_[4:0] ra2_[4:0] wa[4:0] wd[31:0] mema[8:0] memwd[31:0]
+* .connect 0 z
 
 * plot some signals together
 Xjdisplaya ra2_b_wdsel[3:0] ra2sel bsel wdsel[1:0] join
