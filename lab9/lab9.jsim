@@ -82,16 +82,16 @@ Xjinste inst[15:0]  c[15:0]     join
 *******************************************************************************
 * MUXs for PCSEL, RA2SEL, BSEL, WDSEL
 
-Xpcsel_ pcsel0#7 pcsel1#7 pcincrement[8:2] branch[8:2] rd1_[8:2] pc[8:2] pc_res[8:2] mux4
+Xpcsel_ pcsel0#7 pcsel1#7 pc_incr[8:2] br[8:2] rd1_[8:2] pc[8:2] pc_result[8:2] mux4
 
 Xra2sel_ ra2sel#5 rb[4:0] rc[4:0] ra2_[4:0] mux2 
 
-Xbsel_ bsel#32 rd2_[31:0] c15#16 c[15:0] b_res[31:0] mux2
+Xbsel_ bsel#32 rd2_[31:0] c15#16 c[15:0] bsel_result[31:0] mux2
 
-Xalu_ rd1_[31:0] b_res[31:0] alufn[5:0] mema[31:0] alu32
+Xalu_ rd1_[31:0] bsel_result[31:0] alufn[5:0] mema[31:0] alu32
 
-Xwdsel0_ wdsel0#32 0#23 pcincrement[8:2] 0#2 mema[31:0] wd_branch_alu[31:0] mux2
-Xwdsel1_ wdsel1#32 wd_branch_alu[31:0] memrd[31:0] wd[31:0] mux2
+Xwdsel0_ wdsel0#32 0#23 pc_incr[8:2] 0#2 mema[31:0] wd_br_alu[31:0] mux2
+Xwdsel1_ wdsel1#32 wd_br_alu[31:0] memrd[31:0] wd[31:0] mux2
 
 *******************************************************************************
 * NOR gate for Z
@@ -104,7 +104,7 @@ Xzcheck2 rd1_[29:0] y[0:29] y[1:30] nor2
 * Program Counter (PC)
 
 Xpc pc_in[8:2] clk2#7 pc[8:2] dreg
-Xpcincrement pc[8:2] 0#7 pc_carry_out[7:2] vdd pcincrement[8:2] pc_carry_out[8:2] fa
+Xpcincrement pc[8:2] 0#7 pc_c_out[7:2] vdd pc_incr[8:2] pc_c_out[8:2] fa
 .connect 0 pc[1:0]
 
 *******************************************************************************
@@ -115,13 +115,13 @@ Xra1_joinra ra1_[4:0] ra[4:0] join
 *******************************************************************************
 * Branch Target (PC + 4 + 4C)
 
-Xpcbeq pcincrement[8:2] c[6:0] branch_carry_out[7:2] 0 branch[8:2] branch_carry_out[8:2] fa
+Xpcbeq pc_incr[8:2] c[6:0] br_c_out[7:2] 0 br[8:2] br_c_out[8:2] fa
 
 *******************************************************************************
 * Reset Logic
 
 Wreset reset nrz(0, 5, 10ns, 0ns, 0.001ns, 0.001ns) 1 0
-Xreset reset#9 wr_control werf_control pc_res[8:2] 0#9 wr werf pc_in[8:2] mux2
+Xreset reset#9 wr_control werf_control pc_result[8:2] 0#9 wr werf pc_in[8:2] mux2
 
 *******************************************************************************
 * Other Stuff
