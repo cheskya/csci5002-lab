@@ -118,7 +118,7 @@ Xwerf z2 werf 0 werf_ mux2
 * Control Logic
 * see lab 8
 
-Xcontrol  vdd  0  0  z opcode[5:0]  control[13:0]
+Xcontrol  vdd  0  0  z opcode[5:0] control[13:0]
 + $memory width=14 nlocations=128 contents=(
 +   0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000
 +   0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000 0b11000000000000
@@ -144,13 +144,13 @@ Xcontrol  vdd  0  0  z opcode[5:0]  control[13:0]
   .connect S T
 .ends
 
-Xjcontrola control[13:12] pcsel[1:0] join
-Xjcontrolb control11      ra2sel     join
-Xjcontrolc control10      bsel       join
-Xjcontrold control[9:8]   wdsel[1:0] join
-Xjcontrole control[7:2]   alufn[5:0] join
-Xjcontrolf control1       wr         join
-Xjcontrolg control0       werf       join
+Xjcontrola control[13:12] pcsel[1:0]   join
+Xjcontrolb control11      ra2sel       join
+Xjcontrolc control10      bsel         join
+Xjcontrold control[9:8]   wdsel[1:0]   join
+Xjcontrole control[7:2]   alufn[5:0]   join
+Xjcontrolf control1       wr_control   join
+Xjcontrolg control0       werf_control join
 
 Xjinsta inst[31:26] opcode[5:0] join
 Xjinstb inst[25:21] rc[4:0]     join
@@ -161,6 +161,8 @@ Xjinste inst[15:0]  c[15:0]     join
 *******************************************************************************
 * MUXs for PCSEL, RA2SEL, BSEL, WDSEL
 
+Xpcsel_ pcsel0#7 pcsel1#7 pcincrement[8:2] branch[8:2] rd1_[8:2] pc[8:2] pc_res[8:2] mux4
+
 *******************************************************************************
 * NOR gate for Z
 
@@ -168,7 +170,8 @@ Xjinste inst[15:0]  c[15:0]     join
 * Program Counter (PC)
 * replace the one here with the working program counter!
 
-Xjpc clk[8:2] pc[8:2] join
+Xpc pc_in[8:2] clk2#7 pc[8:2] dreg
+Xpcincrement pc[8:2] 0#7 pc_carry_out[7:2] vdd pcincrement[8:2] pc_carry_out[8:2] fa
 .connect 0 pc[1:0]
 
 *******************************************************************************
@@ -177,8 +180,13 @@ Xjpc clk[8:2] pc[8:2] join
 *******************************************************************************
 * Branch Target (PC + 4 + 4C)
 
+Xpcbeq pcincrement[8:2] c[6:0] branch_carry_out[7:2] 0 branch[8:2] branch_carry_out[8:2] fa
+
 *******************************************************************************
 * Reset Logic
+
+Wreset reset nrz(0, 5, 10ns, 0ns, 0.001ns, 0.001ns) 1 0
+Xreset reset#9 control1 control0 pc_res[8:2] 0#9 wr werf pc_in[8:2] mux2
 
 *******************************************************************************
 * Other Stuff
@@ -193,6 +201,7 @@ Xjdisplayb wr_werfs[2:0]    wr werf werf_          join
 
 * plot the signals
 .tran 1280ns
+.plot clk2
 .plot pc[8:0]
 .plot betaop(opcode[5:0])
 .plot d(ra[4:0])
