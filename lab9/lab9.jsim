@@ -32,7 +32,7 @@ Xregisters  vdd  0    0      ra1_[4:0]  rd1_[31:0]
 +   0 0 0 0 0 0 0 0
 + )
 
-Xjwa_c wa[4:0] rc[4:0] join
+Xjwa_rc wa[4:0] rc[4:0] join
 
 Xwerfcheck1 wa[4:1] z1 and4
 Xwerfcheck2 wa0 z1 z2 and2
@@ -112,7 +112,7 @@ Xpcincr pc[8:2] 0#7 pc_c_out[7:2] vdd pc_incr[8:2] pc_c_out[8:2] fa
 *******************************************************************************
 * Jump Target (JT)
 
-Xra1_joinra ra1_[4:0] ra[4:0] join
+Xjra1__ra ra1_[4:0] ra[4:0] join
 
 *******************************************************************************
 * Branch Target (PC + 4 + 4C)
